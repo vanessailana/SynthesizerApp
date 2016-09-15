@@ -40,7 +40,7 @@ public class SynthesizerModel {
 
     SynthesizerModel() {
 
-        amp = 10000;
+        amp = 32767;
         sr = 44100;
 
         masterVolume = 0.0f;
@@ -84,7 +84,7 @@ public class SynthesizerModel {
         switch (id) {
             case R.id.frequency:
                 params[ParameterNames.kFrequency.getValue()] =
-                        (2000.f*value)/getSampleRate();
+                        110.0f+((2000.f*value)/getSampleRate());
                 break;
             case R.id.master_volume:
                 params[ParameterNames.kMasterVolume.getValue()] = value;
@@ -114,13 +114,9 @@ public class SynthesizerModel {
     public void processReplacing(short outputs[], int buffsize)
     {
 
-
-
         for (int i = 0; i < buffsize; i += 2)
         {
-
             update();
-
             short output = (short) (masterVolume*amp*oscillator.process(oscillatorState));
             outputs[i] = output; //Left output
             outputs[i + 1] = output; //Right output
