@@ -84,7 +84,7 @@ public class SynthesizerModel {
         switch (id) {
             case R.id.frequency:
                 params[ParameterNames.kFrequency.getValue()] =
-                        110.0f+((2000.f*value)/getSampleRate());
+                        (16.f+2000.f*value)/getSampleRate();
                 break;
             case R.id.master_volume:
                 params[ParameterNames.kMasterVolume.getValue()] = value;

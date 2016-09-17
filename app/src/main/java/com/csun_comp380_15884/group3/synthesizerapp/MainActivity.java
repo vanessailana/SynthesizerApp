@@ -43,6 +43,11 @@ public class MainActivity extends AppCompatActivity
 
         masterVolumeSlider = (SeekBar) findViewById(R.id.master_volume);
 
+        //How you would make gui changes when loading presets
+        masterVolumeSlider.setProgress((int)(100*synthesizerModel.getParameter(R.id.master_volume)));
+
+        fSlider.setProgress((int)(100*synthesizerModel.getParameter(R.id.frequency)));
+
         // create a listener for the slider bar;
         OnSeekBarChangeListener listener = new OnSeekBarChangeListener()
         {
