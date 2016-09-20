@@ -10,23 +10,38 @@ import android.os.Bundle;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
+import com.csun_comp380_15884.group3.synthesizerapp.keyboard.KeyboardView;
+import com.csun_comp380_15884.group3.synthesizerapp.keyboard.ScrollStripView;
+import com.csun_comp380_15884.group3.synthesizerapp.knob.KnobListener;
+import com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView;
+import com.csun_comp380_15884.group3.synthesizerapp.midi.MidiListener;
+
 
 public class MainActivity extends AppCompatActivity
 {
     SynthesizerAudioOutputThread thread;
     SynthesizerModel synthesizerModel;
 
-    SeekBar fSlider;
-    SeekBar masterVolumeSlider;
-    float sliderval;
+    SeekBar frequencySlider;
+    SeekBar masterSlider;
 
+    MidiListener midiListener;
+
+    KnobView [] knobViews;
+
+    KeyboardView keyboardView;
+
+    ScrollStripView scrollStripView;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
+        super.onCreate(savedInstanceState);
+
+
+
+        setContentView(R.layout.activity_main);
 
         //Our base Synthesizer model
         //TODO: DSP AND MIDI NOTE ON NOTE OFF
@@ -38,56 +53,116 @@ public class MainActivity extends AppCompatActivity
         thread.setSynthesizerModel(synthesizerModel);
 
 
+        keyboardView = (KeyboardView) findViewById(R.id.kv);
+
+        scrollStripView = (ScrollStripView) findViewById(R.id.ssv);
+
+        //KNOBS//
+
+        knobViews = new KnobView[20];
+
+        knobViews[0] = (KnobView) findViewById(R.id.mod_0_0);
+        knobViews[1] = (KnobView) findViewById(R.id.mod_0_1);
+        knobViews[2] = (KnobView) findViewById(R.id.mod_0_2);
+        knobViews[3] = (KnobView) findViewById(R.id.mod_0_3);
+
+        knobViews[4] = (KnobView) findViewById(R.id.mod_1_0);
+        knobViews[5] = (KnobView) findViewById(R.id.mod_1_1);
+        knobViews[6] = (KnobView) findViewById(R.id.mod_1_2);
+        knobViews[7] = (KnobView) findViewById(R.id.mod_1_3);
+
+        knobViews[8] = (KnobView) findViewById(R.id.mod_2_0);
+        knobViews[9] = (KnobView) findViewById(R.id.mod_2_1);
+        knobViews[10] = (KnobView) findViewById(R.id.mod_2_2);
+        knobViews[11] = (KnobView) findViewById(R.id.mod_2_3);
+
+        knobViews[12] = (KnobView) findViewById(R.id.mod_3_0);
+        knobViews[13] = (KnobView) findViewById(R.id.mod_3_1);
+        knobViews[14] = (KnobView) findViewById(R.id.mod_3_2);
+        knobViews[15] = (KnobView) findViewById(R.id.mod_3_3);
+
+        knobViews[16] = (KnobView) findViewById(R.id.out_0);
+        knobViews[17] = (KnobView) findViewById(R.id.out_1);
+        knobViews[18] = (KnobView) findViewById(R.id.out_2);
+        knobViews[19] = (KnobView) findViewById(R.id.out_3);
+
+
+        KnobListener knobListener = new KnobListener() {
+
+            @Override
+            public void onKnobChanged(KnobView knobView, double newValue) {
+                int id = knobView.getId();
+                synthesizerModel.setParameter(id,(float) newValue);
+            }
+
+        };
+
+        for(int i = 0 ; i < 20; i++){
+            knobViews[i].setKnobListener(knobListener);
+        }
+
+        knobViews[0].setValue(synthesizerModel.getParameter(R.id.mod_0_0));
+        knobViews[1].setValue(synthesizerModel.getParameter(R.id.mod_0_1));
+        knobViews[2].setValue(synthesizerModel.getParameter(R.id.mod_0_2));
+        knobViews[3].setValue(synthesizerModel.getParameter(R.id.mod_0_3));
+
+        knobViews[4].setValue(synthesizerModel.getParameter(R.id.mod_1_0));
+        knobViews[5].setValue(synthesizerModel.getParameter(R.id.mod_1_1));
+        knobViews[6].setValue(synthesizerModel.getParameter(R.id.mod_1_2));
+        knobViews[7].setValue(synthesizerModel.getParameter(R.id.mod_1_3));
+
+        knobViews[8].setValue(synthesizerModel.getParameter(R.id.mod_2_0));
+        knobViews[9].setValue(synthesizerModel.getParameter(R.id.mod_2_1));
+        knobViews[10].setValue(synthesizerModel.getParameter(R.id.mod_2_2));
+        knobViews[11].setValue(synthesizerModel.getParameter(R.id.mod_2_3));
+
+        knobViews[12].setValue(synthesizerModel.getParameter(R.id.mod_3_0));
+        knobViews[13].setValue(synthesizerModel.getParameter(R.id.mod_3_1));
+        knobViews[14].setValue(synthesizerModel.getParameter(R.id.mod_3_2));
+        knobViews[15].setValue(synthesizerModel.getParameter(R.id.mod_3_3));
+
+        knobViews[16].setValue(synthesizerModel.getParameter(R.id.out_0));
+        knobViews[17].setValue(synthesizerModel.getParameter(R.id.out_1));
+        knobViews[18].setValue(synthesizerModel.getParameter(R.id.out_2));
+        knobViews[19].setValue(synthesizerModel.getParameter(R.id.out_3));
+
+
+
+
+
+        ///SLIDERS///
         // point the slider to the GUI widget
-        fSlider = (SeekBar) findViewById(R.id.frequency);
-
-        masterVolumeSlider = (SeekBar) findViewById(R.id.master_volume);
-
-        //How you would make gui changes when loading presets
-        masterVolumeSlider.setProgress((int)(100*synthesizerModel.getParameter(R.id.master_volume)));
-
-        fSlider.setProgress((int)(100*synthesizerModel.getParameter(R.id.frequency)));
-
+        frequencySlider = (SeekBar) findViewById(R.id.frequency);
+        masterSlider = (SeekBar) findViewById(R.id.master);
+        //How you would make gui changes when loading presets for sliders
+        masterSlider.setProgress((int)(100*synthesizerModel.getParameter(R.id.master)));
+        frequencySlider.setProgress((int)(100*synthesizerModel.getParameter(R.id.frequency)));
         // create a listener for the slider bar;
-        OnSeekBarChangeListener listener = new OnSeekBarChangeListener()
-        {
+        OnSeekBarChangeListener listener = new OnSeekBarChangeListener() {
 
-            public void onStopTrackingTouch(SeekBar seekBar)
-            {
+            public void onStopTrackingTouch(SeekBar seekBar) {}
 
-            }
+            public void onStartTrackingTouch(SeekBar seekBar) {}
 
-            public void onStartTrackingTouch(SeekBar seekBar)
-            {
-
-            }
-
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-            {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 int id = seekBar.getId();
-                switch (id)
-                {
-                    case R.id.frequency:
-                        sliderval = (float)progress/seekBar.getMax();
-                        synthesizerModel.setParameter(id, sliderval);
-                        break;
-                    case R.id.master_volume:
-                        sliderval = (float)progress/seekBar.getMax();
-                        synthesizerModel.setParameter(id, sliderval);
-                    default:
-                        break;
-
-                }
-
+                double newValue = (double) progress/seekBar.getMax();
+                synthesizerModel.setParameter(id,(float) newValue);
             }
         };
 
         // set the listener on the slider
-        fSlider.setOnSeekBarChangeListener(listener);
-        masterVolumeSlider.setOnSeekBarChangeListener(listener);
+        frequencySlider.setOnSeekBarChangeListener(listener);
+        masterSlider.setOnSeekBarChangeListener(listener);
+
+
+        keyboardView = (KeyboardView) findViewById(R.id.kv);
+
+        scrollStripView = (ScrollStripView) findViewById(R.id.ssv);
 
         thread.start();
     }
+
 
 
     public void onDestroy() {

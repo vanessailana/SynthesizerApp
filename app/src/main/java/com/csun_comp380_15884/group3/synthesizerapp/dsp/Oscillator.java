@@ -1,4 +1,4 @@
-package com.csun_comp380_15884.group3.synthesizerapp;
+package com.csun_comp380_15884.group3.synthesizerapp.dsp;
 
 
 /**
@@ -9,12 +9,16 @@ public class Oscillator {
 
     //Our lookup table variables sine Math.sin is processor heavy
     //We have to interpolate between predetermined values
-    float mLUT [];
+    float [] mLUT;
+    public float [] mInput;
+    public float [] mInputAmp;
+
+
     int mLUTSize;
     int mLUTSizeM;
     float mLUTSizeF;
 
-    Oscillator()
+    public Oscillator()
     {
 
         mLUTSize = 4096;
@@ -26,6 +30,9 @@ public class Oscillator {
         {
             mLUT[i] = (float)Math.sin(i/mLUTSizeF*2.0f*Math.PI);
         }
+
+        mInput = new float [4];
+        mInputAmp = new float[4];
 
     }
 
@@ -41,8 +48,16 @@ public class Oscillator {
     public float process(OscillatorState oscillatorState)
     {
 
+        if(oscillatorState.mPhase>1.0f)
+        {
+            oscillatorState.mPhase -= 1.0f;
+        }
 
-        float output = lerp(oscillatorState.mPhase * mLUTSizeF, mLUT, mLUTSizeM);
+        float modulationTotal =
+                mInput[0]*mInputAmp[0] + mInput[1]*mInputAmp[1] +
+                        mInput[2]*mInputAmp[2]+ mInput[3]*mInputAmp[3];
+
+        float output = lerp((oscillatorState.mPhase + modulationTotal) * mLUTSizeF, mLUT, mLUTSizeM);
 
         oscillatorState.mPhase += oscillatorState.mPhaseIncrement;
 

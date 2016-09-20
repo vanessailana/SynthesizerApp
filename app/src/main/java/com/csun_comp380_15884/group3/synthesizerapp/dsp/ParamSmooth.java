@@ -1,4 +1,4 @@
-package com.csun_comp380_15884.group3.synthesizerapp;
+package com.csun_comp380_15884.group3.synthesizerapp.dsp;
 
 /**
  * Created by marvin on 9/10/16.
@@ -6,7 +6,7 @@ package com.csun_comp380_15884.group3.synthesizerapp;
 public class ParamSmooth {
 
     private float a,b,z;
-    ParamSmooth()
+    public ParamSmooth()
     {
         a = .99f;
         b = 1.0f - a;
