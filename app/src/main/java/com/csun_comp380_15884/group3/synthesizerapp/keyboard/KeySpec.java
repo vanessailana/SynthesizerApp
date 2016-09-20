@@ -26,3 +26,4 @@ public class KeySpec {
   // we may add an optional draw poly later
   public int color;
 }
+

@@ -7,6 +7,7 @@ package com.csun_comp380_15884.group3.synthesizerapp;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
@@ -156,9 +157,145 @@ public class MainActivity extends AppCompatActivity
         masterSlider.setOnSeekBarChangeListener(listener);
 
 
+
         keyboardView = (KeyboardView) findViewById(R.id.kv);
 
+
+        keyboardView.setMidiListener(new MidiListener() {
+            @Override
+            public void onNoteOff(int channel, int note, int velocity) {
+
+            }
+
+            @Override
+            public void onNoteOn(int channel, int note, int velocity) {
+
+            }
+
+            @Override
+            public void onNoteAftertouch(int channel, int note, int aftertouch) {
+
+            }
+
+            @Override
+            public void onController(int channel, int control, int value) {
+
+            }
+
+            @Override
+            public void onProgramChange(int channel, int program) {
+
+            }
+
+            @Override
+            public void onChannelAftertouch(int channel, int aftertouch) {
+
+            }
+
+            @Override
+            public void onPitchBend(int channel, int value) {
+
+            }
+
+            @Override
+            public void onTimingClock() {
+
+            }
+
+            @Override
+            public void onActiveSensing() {
+
+            }
+
+            @Override
+            public void onSequenceNumber(int sequenceNumber) {
+
+            }
+
+            @Override
+            public void onText(byte[] text) {
+
+            }
+
+            @Override
+            public void onCopyrightNotice(byte[] text) {
+
+            }
+
+            @Override
+            public void onSequenceName(byte[] text) {
+
+            }
+
+            @Override
+            public void onInstrumentName(byte[] text) {
+
+            }
+
+            @Override
+            public void onLyrics(byte[] text) {
+
+            }
+
+            @Override
+            public void onMarker(byte[] text) {
+
+            }
+
+            @Override
+            public void onCuePoint(byte[] text) {
+
+            }
+
+            @Override
+            public void onChannelPrefix(int channel) {
+
+            }
+
+            @Override
+            public void onPort(byte[] data) {
+
+            }
+
+            @Override
+            public void onEndOfTrack() {
+
+            }
+
+            @Override
+            public void onSetTempo(int microsecondsPerQuarterNote) {
+
+            }
+
+            @Override
+            public void onSmpteOffset(byte[] data) {
+
+            }
+
+            @Override
+            public void onTimeSignature(int numerator, int denominator, int metronomePulse, int thirtySecondNotesPerQuarterNote) {
+
+            }
+
+            @Override
+            public void onKeySignature(int key, boolean isMinor) {
+
+            }
+
+            @Override
+            public void onSequencerSpecificEvent(byte[] data) {
+
+            }
+
+            @Override
+            public void onSysEx(byte[] data) {
+
+            }
+        });
+
         scrollStripView = (ScrollStripView) findViewById(R.id.ssv);
+
+        scrollStripView.bindKeyboard(keyboardView);
 
         thread.start();
     }
