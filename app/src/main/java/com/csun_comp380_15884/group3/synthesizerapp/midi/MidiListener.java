@@ -18,7 +18,7 @@ package com.csun_comp380_15884.group3.synthesizerapp.midi;
 
 /**
  * An interface for listening for any kind of midi event.
- * @see MidiAdapter
+ *
  */
 public interface MidiListener {
   // Control events.
