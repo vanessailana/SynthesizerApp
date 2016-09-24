@@ -7,6 +7,8 @@ package com.csun_comp380_15884.group3.synthesizerapp;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -16,6 +18,8 @@ import com.csun_comp380_15884.group3.synthesizerapp.keyboard.ScrollStripView;
 import com.csun_comp380_15884.group3.synthesizerapp.knob.KnobListener;
 import com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView;
 import com.csun_comp380_15884.group3.synthesizerapp.midi.MidiListener;
+
+import java.util.concurrent.Semaphore;
 
 
 public class MainActivity extends AppCompatActivity
@@ -34,13 +38,18 @@ public class MainActivity extends AppCompatActivity
 
     ScrollStripView scrollStripView;
 
+
+    boolean [] noteOnArray;
+
+    int [] midiData;
+
+    static Semaphore mutex = new Semaphore(1);
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
 
         super.onCreate(savedInstanceState);
-
-
 
         setContentView(R.layout.activity_main);
 
@@ -50,6 +59,8 @@ public class MainActivity extends AppCompatActivity
 
 
         thread = new SynthesizerAudioOutputThread();
+
+        thread.setMutex(mutex);
 
         thread.setSynthesizerModel(synthesizerModel);
 
@@ -133,11 +144,10 @@ public class MainActivity extends AppCompatActivity
 
         ///SLIDERS///
         // point the slider to the GUI widget
-        frequencySlider = (SeekBar) findViewById(R.id.frequency);
         masterSlider = (SeekBar) findViewById(R.id.master);
         //How you would make gui changes when loading presets for sliders
         masterSlider.setProgress((int)(100*synthesizerModel.getParameter(R.id.master)));
-        frequencySlider.setProgress((int)(100*synthesizerModel.getParameter(R.id.frequency)));
+
         // create a listener for the slider bar;
         OnSeekBarChangeListener listener = new OnSeekBarChangeListener() {
 
@@ -152,23 +162,60 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
+
+
         // set the listener on the slider
-        frequencySlider.setOnSeekBarChangeListener(listener);
         masterSlider.setOnSeekBarChangeListener(listener);
-
-
 
         keyboardView = (KeyboardView) findViewById(R.id.kv);
 
 
+        noteOnArray = new boolean[128];
+
+        for (int i = 0; i < 128; i++) {
+            noteOnArray[i] = false;
+        }
+
+        midiData = new int[3];
+
         keyboardView.setMidiListener(new MidiListener() {
+
             @Override
             public void onNoteOff(int channel, int note, int velocity) {
+                    midiData [0] = 0x80;
+                    midiData [1] = note;
+                    midiData [2] = 0;
 
+                try {
+                    mutex.acquire();
+                    try {
+
+                        synthesizerModel.processEvents(midiData, 0);
+                    } finally {
+                        mutex.release();
+                    }
+                }catch (InterruptedException e){
+
+                }
             }
 
             @Override
             public void onNoteOn(int channel, int note, int velocity) {
+                midiData[0] = 0x90;
+                midiData[1] = note;
+                midiData[2] = velocity;
+
+                try {
+                    mutex.acquire();
+                    try {
+
+                        synthesizerModel.processEvents(midiData, 0);
+                    } finally {
+                        mutex.release();
+                    }
+                }catch (InterruptedException e){
+
+                }
 
             }
 

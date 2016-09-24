@@ -1,8 +1,11 @@
 package com.csun_comp380_15884.group3.synthesizerapp;
 
+import com.csun_comp380_15884.group3.synthesizerapp.dsp.ADSR;
+import com.csun_comp380_15884.group3.synthesizerapp.dsp.ADSRState;
 import com.csun_comp380_15884.group3.synthesizerapp.dsp.Oscillator;
 import com.csun_comp380_15884.group3.synthesizerapp.dsp.OscillatorState;
 import com.csun_comp380_15884.group3.synthesizerapp.dsp.ParamSmooth;
+import com.csun_comp380_15884.group3.synthesizerapp.dsp.VoiceState;
 
 /**
  * Created by marvin on 9/15/16.
@@ -13,15 +16,22 @@ public class SynthesizerModel {
     int sampleRate;
 
     Oscillator [] oscillator;
-    OscillatorState [] oscillatorState;
+    ADSR [] adsr;
+    VoiceState [] vs;
 
     float master;
     float [] oscillatorAmp;
 
     ParamSmooth [] mPS ;
-    
+
     float [] params;
     private int frequency;
+
+
+    int [] notes;
+    static final int EVENTSDONE = 9999999;
+
+    private int activeVoices;
 
     static public enum PN
     {
@@ -82,19 +92,33 @@ public class SynthesizerModel {
             mPS[i] = new ParamSmooth();
         }
 
+        activeVoices = 0;
+
         params = new float [PN.kNumberOfParameters.getValue()];
 
         oscillator = new Oscillator[4];
-        oscillatorState = new OscillatorState[4];
+
+        adsr = new ADSR[4];
+
+        for (int i = 0; i < 4; i++) {
+            oscillator[i] = new Oscillator();
+            adsr[i] = new ADSR();
+        }
+
         oscillatorAmp = new float[4];
 
-        for(int i = 0; i < 4; i++) {
-            oscillator[i] = new Oscillator();
-            oscillatorState[i] = new OscillatorState();
-            oscillatorState[i].mPhaseIncrement = 440.f / getSampleRate();
+        vs = new VoiceState[8];
+
+        for (int i = 0; i < 8; i++) {
+            vs[i] = new VoiceState();
         }
 
 
+        notes = new int[128];
+
+        for (int i = 0; i < 128; i++) {
+            notes[i] = EVENTSDONE;
+        }
 
         setParameter(R.id.mod_0_0,0.0f);
         setParameter(R.id.mod_0_1,0.0f);
@@ -136,12 +160,6 @@ public class SynthesizerModel {
     {
         master = mPS[PN.kMaster.getValue()].process(params[PN.kMaster.getValue()]);
 
-        for(int i = 0; i < 4; i++) {
-            oscillatorState[i].mPhaseIncrement = mPS[PN.kFrequency.getValue()].
-                    process(params[PN.kFrequency.getValue()]);
-
-
-        }
 
         oscillator[0].mInputAmp[0] = mPS[PN.kMod0To0.getValue()].process(params[PN.kMod0To0.getValue()]);
         oscillator[0].mInputAmp[1] = mPS[PN.kMod0To1.getValue()].process(params[PN.kMod0To1.getValue()]);
@@ -173,9 +191,6 @@ public class SynthesizerModel {
     public void setParameter(int id, float value) {
 
         switch (id) {
-            case R.id.frequency:
-                params[PN.kFrequency.getValue()] = (16.f+2000.f*value)/getSampleRate();
-                break;
             case R.id.master:
                 params[PN.kMaster.getValue()] = value;
                 break;
@@ -249,8 +264,6 @@ public class SynthesizerModel {
     {
         switch (id)
         {
-            case R.id.frequency:
-                return params[PN.kFrequency.getValue()];
             case R.id.master:
                 return params[PN.kMaster.getValue()];
             case R.id.mod_0_0:
@@ -303,35 +316,159 @@ public class SynthesizerModel {
 
     public void processReplacing(short outputs[], int buffsize)
     {
-        float [] osc = new float[4];
+        float [] oper = new float[4];
         float left = 0.0f;
         float right = 0.0f;
-        for (int i = 0; i < buffsize; i += 2)
+
+
+        int frame = 0;
+        int frames = 0;
+        int event = 0;
+
+
+        int i = 0;
+
+        int sampleFrames = buffsize/2;
+
+        if(activeVoices > 0 || notes[event] < sampleFrames) {
+            while (frame < sampleFrames) {
+
+                frames = notes[event++];
+                if (frames > sampleFrames)
+                {
+                    frames = sampleFrames;
+                }
+                frames -= frame;
+                frame += frames;
+
+                while (--frames >= 0) {
+                    update();
+                    left = 0.0f;
+                    right = 0.0f;
+
+                    for (int v = 0; v < 1; v++) {
+
+                        if (vs[v].mAS[0].mStage != ADSRState.ADSRStage.kIdle
+                                || vs[v].mAS[1].mStage != ADSRState.ADSRStage.kIdle
+                                || vs[v].mAS[2].mStage != ADSRState.ADSRStage.kIdle
+                                || vs[v].mAS[3].mStage != ADSRState.ADSRStage.kIdle) {
+
+                            for (int j = 0; j < 4; j++) {
+                                oscillator[0].mInput[j] = oper[j] = oscillator[j].process(vs[v].mOS[j]) * adsr[j].process(vs[v].mAS[j]);
+                                oscillator[1].mInput[j] = oper[j];
+                                oscillator[2].mInput[j] = oper[j];
+                                oscillator[3].mInput[j] = oper[j];
+                                left += oper[j] * oscillatorAmp[j];
+                                right += oper[j] * oscillatorAmp[j];
+                            }
+                        }
+                    }
+                    outputs[i] = (short) (8191 * master * left); //Left output
+                    outputs[i + 1] = (short) (8191 * master * right); //Right output
+                    i += 2;
+                }
+
+                if (frame < sampleFrames) {
+                    int note = notes[event++];
+                    int vel = notes[event++];
+                    noteOn(note, vel);
+                }
+
+                activeVoices = 1 ;
+                for (int v = 0; v < 1; v++) {
+                    if (vs[v].mAS[0].mStage == ADSRState.ADSRStage.kIdle
+                            && vs[v].mAS[1].mStage == ADSRState.ADSRStage.kIdle
+                            && vs[v].mAS[2].mStage == ADSRState.ADSRStage.kIdle
+                            && vs[v].mAS[3].mStage == ADSRState.ADSRStage.kIdle) {
+                        activeVoices --;
+                    }
+                }
+
+            }
+        }else{
+            for (int j = 0; j < buffsize; j+=2 ) {
+                outputs[j] = 0;
+                outputs[j+1] = 0;
+            }
+        }
+
+        notes[0] = EVENTSDONE;
+
+    }
+
+    public int findFreeVoice()
+    {
+
+
+        return 0;
+    }
+
+    public void noteOn(int note, int velocity)
+    {
+        if(velocity > 0)
         {
-            update();
 
-            left = 0.0f;
-            right = 0.0f;
+            int v = findFreeVoice();
 
-            osc[0] = oscillator[0].process(oscillatorState[0]);
-            osc[1] = oscillator[1].process(oscillatorState[1]);
-            osc[2] = oscillator[2].process(oscillatorState[2]);
-            osc[3] = oscillator[3].process(oscillatorState[3]);
+            vs[v].mKey = note;
 
-            for(int j = 0; j < 4; j++)
-            {
-                oscillator[j].mInput[0] = osc[0];
-                oscillator[j].mInput[1] = osc[1];
-                oscillator[j].mInput[2] = osc[2];
-                oscillator[j].mInput[3] = osc[3];
-                left += osc[j]*oscillatorAmp[j];
-                right += osc[j]*oscillatorAmp[j];
+            double inc = Math.pow(2.0, (((double)note)-69.0)/12.0) * 440.0;
+
+            for(int i = 0; i < 4; i++) {
+
+                vs[v].mOS[i].mPhaseIncrement = (float)inc/(float)sampleRate;
+                vs[v].mAS[i].mStage = ADSRState.ADSRStage.kStageAttack;
+                vs[v].mAS[i].mLevel = 1.0f;
             }
 
-            outputs[i] = (short) (8191*master*left); //Left output
-            outputs[i + 1] = (short) (8191*master*right); //Right output
+            activeVoices = 1;
+
+
+        }else{
+
+            for (int v = 0; v < 8; v++) {
+
+                if (vs[v].mKey == note)
+                {
+                    if (vs[v].mAS[0].mStage != ADSRState.ADSRStage.kIdle
+                            || vs[v].mAS[1].mStage != ADSRState.ADSRStage.kIdle
+                            || vs[v].mAS[2].mStage != ADSRState.ADSRStage.kIdle
+                            || vs[v].mAS[3].mStage != ADSRState.ADSRStage.kIdle)
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            vs[v].mAS[i].mStage = ADSRState.ADSRStage.kStageRelease;
+                        }
+                        vs[v].mKey = -1;
+                        return;
+                    }
+
+                }
+            }
+
+        }
+    }
+
+    public void processEvents(int [] midiData, int deltaFrames) {
+        int npos = 0;
+
+        switch (midiData[0])
+        {
+            case 0x80: //note off
+                notes[npos++] = deltaFrames; //delta
+                notes[npos++] = midiData[1]; //note
+                notes[npos++] = 0;           //vel
+                break;
+
+            case 0x90: //note on
+                notes[npos++] = deltaFrames; //delta
+                notes[npos++] = midiData[1]; //note
+                notes[npos++] = midiData[2]; //vel
+                break;
 
         }
 
+        notes[npos] = EVENTSDONE;
     }
+
 }
