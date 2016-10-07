@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
+import com.csun_comp380_15884.group3.synthesizerapp.envelopeGraph.EnvelopeGraph;
 import com.csun_comp380_15884.group3.synthesizerapp.keyboard.KeyboardView;
 import com.csun_comp380_15884.group3.synthesizerapp.keyboard.ScrollStripView;
 import com.csun_comp380_15884.group3.synthesizerapp.knob.KnobListener;
@@ -45,6 +46,9 @@ public class MainActivity extends AppCompatActivity
 
     static Semaphore mutex = new Semaphore(1);
 
+
+    EnvelopeGraph eg;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -68,6 +72,8 @@ public class MainActivity extends AppCompatActivity
         keyboardView = (KeyboardView) findViewById(R.id.kv);
 
         scrollStripView = (ScrollStripView) findViewById(R.id.ssv);
+
+        eg = (EnvelopeGraph) findViewById(R.id.eg);
 
         //KNOBS//
 

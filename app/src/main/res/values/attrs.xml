@@ -15,5 +15,13 @@
         <attr name="first_octave" format="integer"/>
     </declare-styleable>
 
+    <declare-styleable name="EnvelopeGraph">
+        <attr name="showText" format="boolean" />
+        <attr name="labelPosition" format="enum">
+            <enum name="left" value="0"/>
+            <enum name="right" value="1"/>
+        </attr>
+    </declare-styleable>
+
 
 </resources>

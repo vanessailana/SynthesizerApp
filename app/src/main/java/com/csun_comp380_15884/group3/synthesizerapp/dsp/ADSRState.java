@@ -19,6 +19,7 @@ public class ADSRState {
 
     public float mEnvValue;
     public float mLevel;
+    public float mCounter;
     public ADSRStage mStage;
 
 
@@ -26,6 +27,7 @@ public class ADSRState {
     {
         mEnvValue = 0.f;
         mLevel = 0.f;
+        mCounter = 0.f;
         mStage = ADSRStage.kIdle;
     }
 
