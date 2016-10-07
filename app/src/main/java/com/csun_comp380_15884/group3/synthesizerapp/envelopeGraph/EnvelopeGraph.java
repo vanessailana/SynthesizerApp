@@ -41,12 +41,22 @@ public class EnvelopeGraph extends View {
     private  Paint mPaint;
     private Rect mRect;
     private RectF mRectF;
+
     private float mPointerX;
     private float mPointerY;
     private float mPointerSize;
 
+    private float mTotalTime;
+    private float mXa, mYa, mSa, mXd, mSd, mYs, mXr, mSr;
+
+
+
     public EnvelopeGraph(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+
+
+
 
         init();
 
@@ -56,12 +66,32 @@ public class EnvelopeGraph extends View {
         super.onDraw(canvas);
 
         getDrawingRect(mRect);
+
         mRectF.set(mRect);
         // Apply padding.
         mRectF.left += getPaddingLeft();
         mRectF.right -= getPaddingRight();
         mRectF.top += getPaddingTop();
         mRectF.bottom -= getPaddingBottom();
+
+
+        mXa = 100;
+        mYa = 1.0f;
+        mSa = 1.0f;
+
+        mXd = 200;
+        mSd = 1.0f;
+
+        mYs = 1.0f;
+
+        mXr = 400;
+        mSr = 1.0f;
+
+        mTotalTime = mXa+mXd+mXr;
+
+        mXa = (mXa/mTotalTime)*mRectF.width();
+        mXd = (mXd/mTotalTime)*mRectF.width();
+        mXr = (mXr/mTotalTime)*mRectF.width();
 
         // Make it square.
         if (mRectF.height() > mRectF.width()) {
@@ -79,10 +109,10 @@ public class EnvelopeGraph extends View {
         mPointerY = mRectF.centerY();
         mPointerSize = mRectF.width()*.5f;
 
-        //canvas.drawCircle(mPointerX, mPointerY, mPointerSize, mPaint);
-        for(float i = 0.0f ; i < mRectF.centerX(); i+=1.0f) {
-            canvas.drawCircle(i,mRectF.centerY()*2.0f-i,2,mPaint);
 
+        for(float i = 0.0f ; i < mTotalTime; i+=1.0f) {
+            float y = (float)Math.pow(i/mXa,mSa)*mYa*i;
+            canvas.drawCircle(i, y, 10,mPaint);
         }
     }
 

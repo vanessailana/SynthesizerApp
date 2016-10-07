@@ -11,6 +11,12 @@
     <LinearLayout android:orientation="horizontal"
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
+
+        <SeekBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/master" />
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="wrap_content"
@@ -292,7 +298,7 @@
         <com.csun_comp380_15884.group3.synthesizerapp.envelopeGraph.EnvelopeGraph
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            />
+            android:id="@+id/eg" />
 
     </LinearLayout>
     <com.csun_comp380_15884.group3.synthesizerapp.keyboard.ScrollStripView
