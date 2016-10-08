@@ -33,6 +33,7 @@ public class ADSR {
         setDecayShape(1.0f);
         setReleaseShape(1.0f);
 
+        setAttackLevel(1.0f);
         setSampleRate(44100.0f);
 
         setLoop(false);
@@ -46,8 +47,8 @@ public class ADSR {
             case kIdle:
                 break;
             case kStageAttack:
-                adsrState.mEnvValue = (float)Math.pow(adsrState.mCounter*mAttack, mAttackShape)*mAttackLevel;
-                if(adsrState.mEnvValue > mAttackLevel)
+                adsrState.mEnvValue = (float)(Math.pow(adsrState.mCounter*mAttack, mAttackShape)*mAttackLevel);
+                if(adsrState.mEnvValue >= mAttackLevel)
                 {
                     adsrState.mCounter = 0;
                     adsrState.mEnvValue = mAttackLevel;
@@ -107,11 +108,11 @@ public class ADSR {
 
     public void setAttackRate(float attackRate)
     {
-        if(attackRate <= 0.0f)
+        if(attackRate <= 0.01f)
         {
             attackRate = 0.01f;
         }
-        mAttack = (1.0f/(mSampleRate*attackRate));
+        mAttack = (1.0f/ (mSampleRate*attackRate));
     }
 
 
@@ -166,7 +167,7 @@ public class ADSR {
             attackLevel = .000001f;
         }
 
-        mSustainLevel = attackLevel;
+        mAttackLevel = attackLevel;
 
     }
 

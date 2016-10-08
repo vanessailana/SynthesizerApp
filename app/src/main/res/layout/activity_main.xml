@@ -10,7 +10,8 @@
 
     <LinearLayout android:orientation="horizontal"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:weightSum="1">
 
         <SeekBar
             android:layout_width="wrap_content"
@@ -295,12 +296,68 @@
 
         </GridLayout>
 
-        <com.csun_comp380_15884.group3.synthesizerapp.envelopeGraph.EnvelopeGraph
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:id="@+id/eg" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"></LinearLayout>
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <com.csun_comp380_15884.group3.synthesizerapp.envelopeGraph.EnvelopeGraph
+                android:layout_height="107dp"
+                android:layout_width="291dp"
+                android:id="@+id/eg"
+                 />
+
+            <LinearLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:text="Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button5"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:text="Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button4"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:text="Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button3"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:text="Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button2"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:text="Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
+
     <com.csun_comp380_15884.group3.synthesizerapp.keyboard.ScrollStripView
         android:id="@+id/ssv"
         android:layout_width="match_parent"

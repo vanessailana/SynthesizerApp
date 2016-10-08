@@ -103,6 +103,18 @@ public class SynthesizerModel {
         for (int i = 0; i < 4; i++) {
             oscillator[i] = new Oscillator();
             adsr[i] = new ADSR();
+            adsr[i].setAttackRate(0.01f);
+            adsr[i].setDecayRate(0.01f);
+            adsr[i].setSustainLevel(1.0f);
+            adsr[i].setReleaseRate(0.01f);
+
+            adsr[i].setAttackShape(1.0f);
+            adsr[i].setDecayShape(1.0f);
+            adsr[i].setReleaseShape(1.0f);
+
+            adsr[i].setAttackLevel(1.0f);
+            adsr[i].setSampleRate(44100.0f);
+
         }
 
         oscillatorAmp = new float[4];
@@ -419,6 +431,7 @@ public class SynthesizerModel {
                 vs[v].mOS[i].mPhaseIncrement = (float)inc/(float)sampleRate;
                 vs[v].mAS[i].mStage = ADSRState.ADSRStage.kStageAttack;
                 vs[v].mAS[i].mLevel = 1.0f;
+                vs[v].mAS[i].mCounter = 0;
             }
 
             activeVoices = 1;

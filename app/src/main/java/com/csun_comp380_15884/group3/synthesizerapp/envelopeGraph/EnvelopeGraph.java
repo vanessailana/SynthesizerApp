@@ -7,16 +7,19 @@ import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.csun_comp380_15884.group3.synthesizerapp.R;
 
 import java.lang.ref.SoftReference;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -42,12 +45,31 @@ public class EnvelopeGraph extends View {
     private Rect mRect;
     private RectF mRectF;
 
+    private RectF mInnerRectF;
+
     private float mPointerX;
     private float mPointerY;
     private float mPointerSize;
 
     private float mTotalTime;
     private float mXa, mYa, mSa, mXd, mSd, mYs, mXr, mSr;
+
+    private float mValueAtTouchA;
+
+
+    private float mIncrement;
+
+    private float mXAtTouch;
+    private float mYAtTouch;
+
+
+    private Path path;
+
+    float [] points;
+
+    boolean aXYSelected;
+    boolean dXYSelected;
+    boolean rXSelected;
 
 
 
@@ -56,6 +78,17 @@ public class EnvelopeGraph extends View {
 
 
 
+        mXa = 100;
+        mYa = 100;
+
+        mXd = 100;
+        mYs = 100;
+
+        mXr = 100;
+
+        aXYSelected = false;
+
+        path = new Path();
 
 
         init();
@@ -67,6 +100,8 @@ public class EnvelopeGraph extends View {
 
         getDrawingRect(mRect);
 
+
+
         mRectF.set(mRect);
         // Apply padding.
         mRectF.left += getPaddingLeft();
@@ -75,45 +110,194 @@ public class EnvelopeGraph extends View {
         mRectF.bottom -= getPaddingBottom();
 
 
-        mXa = 100;
-        mYa = 1.0f;
-        mSa = 1.0f;
+        mInnerRectF.set(mRectF);
 
-        mXd = 200;
-        mSd = 1.0f;
 
-        mYs = 1.0f;
-
-        mXr = 400;
+        mSa = 1.f;
+        mSd = 1.f;
         mSr = 1.0f;
 
         mTotalTime = mXa+mXd+mXr;
 
-        mXa = (mXa/mTotalTime)*mRectF.width();
-        mXd = (mXd/mTotalTime)*mRectF.width();
-        mXr = (mXr/mTotalTime)*mRectF.width();
+        canvas.translate(0,mRectF.height());
+        canvas.scale(1,-1);
 
-        // Make it square.
-        if (mRectF.height() > mRectF.width()) {
-            float center = mRectF.centerY();
-            mRectF.top = center - mRectF.width() / 2;
-            mRectF.bottom = center + mRectF.width() / 2;
-        } else {
-            float center = mRectF.centerX();
-            mRectF.left = center - mRectF.height() / 2;
-            mRectF.right = center + mRectF.height() / 2;
+        if(points == null)
+        {
+            points = new float[(int)mRectF.width()*4];
+        }
+
+        float Y1 = 0.0f;
+        float Y2 = 0.0f;
+        int counter = 0;
+        for(float i = 0; i < mXa ; i+=mIncrement) {
+            Y1 = (float) Math.pow(i / mXa, mSa) * mYa;
+            Y2 = (float) Math.pow((i + mIncrement) / mXa, mSa) * mYa;
+
+            points[counter] = i;
+            points[counter+1] = Y1;
+            points[counter+2] = i+mIncrement;
+            points[counter+3] = Y2;
+            //canvas.drawLine(i,Y1,i+mIncrement,Y2,mPaint);
+            counter+=4;
         }
 
 
-        mPointerX = mRectF.centerX();
-        mPointerY = mRectF.centerY();
-        mPointerSize = mRectF.width()*.5f;
+
+        canvas.drawRect(mRectF,mPaint);
+
+        canvas.drawCircle(mXa,mYa,mPointerSize,mPaint);
 
 
-        for(float i = 0.0f ; i < mTotalTime; i+=1.0f) {
-            float y = (float)Math.pow(i/mXa,mSa)*mYa*i;
-            canvas.drawCircle(i, y, 10,mPaint);
+        for(float i = 0; i < mXd ; i += mIncrement)
+        {
+            if(mYa < mYs)
+            {
+                Y1 = mYa + (float)Math.pow(i/mXd,mSd)*(mYs-mYa);
+                Y2 = mYa + (float)Math.pow((i+mIncrement)/mXd,mSd)*(mYs-mYa);
+            }
+            else if(mYs < mYa)
+            {
+                Y1 = mYa - (float)Math.pow(i/mXd,mSd)*(mYa-mYs);
+                Y2 = mYa - (float)Math.pow((i+mIncrement)/mXd,mSd)*(mYa-mYs);
+            }
+            else{
+                Y1 = mYs;
+                Y2 = mYs;
+            }
+
+
+            //canvas.drawLine(i+mXa,Y1,i+mXa+mIncrement,Y2,mPaint);
+            points[counter] = i+mXa;
+            points[counter+1] = Y1;
+            points[counter+2] = i+mIncrement+mXa;
+            points[counter+3] = Y2;
+            counter+=4;
+
         }
+
+        canvas.drawCircle(mXa+mXd,mYs,mPointerSize,mPaint);
+
+
+        for(float i = 0; i < mXr ; i += mIncrement)
+        {
+
+            Y1 = mYs - (float)Math.pow(i/mXd,mSd)*mYs;
+            Y2 = mYs - (float)Math.pow((i+mIncrement)/mXd,mSd)*mYs;
+
+            //canvas.drawLine(i+mXa+mXd,Y1,i+mXa+mXd+mIncrement,Y2,mPaint);
+            points[counter] = i+mXa+mXd;
+            points[counter+1] = Y1;
+            points[counter+2] = i+mIncrement+mXa+mXd;
+            points[counter+3] = Y2;
+            counter+=4;
+
+        }
+
+        canvas.drawCircle(mXa+mXd+mXr,1.0f,mPointerSize,mPaint);
+
+        canvas.drawLines(points,0,(int)mRectF.width()*4,mPaint);
+
+
+
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+        float valueX = 0.0f;
+        float valueY = 0.0f;
+        float epsilon = 10.0f;
+        switch (action) {
+            case MotionEvent.ACTION_DOWN: {
+                // Just record the current finger position.
+                mXAtTouch = event.getX();
+                mYAtTouch = event.getY();
+
+                if((valueX = Math.abs(mXAtTouch-mXa)) < epsilon)
+                {
+                    aXYSelected = true;
+                }
+                else if((valueX = Math.abs(mXAtTouch-mXa-mXd)) < epsilon)
+                {
+                    dXYSelected = true;
+                }
+                else if((valueX = Math.abs(mXAtTouch-mXa-mXd-mXr)) < epsilon)
+                {
+                    rXSelected = true;
+                }
+
+                getDrawingRect(mRect);
+                break;
+            }
+
+            case MotionEvent.ACTION_MOVE: {
+
+
+                if(aXYSelected)
+                {
+                    mXa = event.getX();
+                    mYa = mRectF.height() - event.getY();
+                    if(mXa < 1.0f)
+                    {
+                        mXa = 1.0f;
+                    }
+                    else if(mXa > mRectF.width())
+                    {
+                        mXa =mRectF.width()-1;
+                    }
+                    if(mYa > mRectF.height())
+                    {
+                        mYa = mRectF.height() - 1;
+                    }
+                    else if (mYa < 1.0f)
+                    {
+                        mYa = 1.0f;
+                    }
+                }
+                else if(dXYSelected)
+                {
+                    mXd = event.getX();
+                    mYs = mRectF.height() - event.getY();
+                }
+                else if(rXSelected)
+                {
+                    mXr = event.getX();
+                }
+
+                /*
+                float xyDelta = event.getX() - event.getY() - xyAtTouch_;
+                knobValue_ = valueAtTouch_ + sensitivity_ * xyDelta;
+                knobValue_ = Math.min(knobValue_, 1.0f);
+                knobValue_ = Math.max(knobValue_, 0.0f);
+
+
+                // Notify listener and redraw.
+                if (listener_ != null) {
+                    listener_.onKnobChanged(this,getValue());
+                }
+                */
+                invalidate();
+
+                break;
+            }
+
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                aXYSelected = false;
+                dXYSelected = false;
+                rXSelected = false;
+            /*{
+                if (listenerUp_ != null) {
+                    listenerUp_.onKnobChanged(this,getValue());
+                }
+                break;
+            }
+            */
+                break;
+        }
+        return true;
     }
 
     @Override
@@ -128,15 +312,24 @@ public class EnvelopeGraph extends View {
     private void init() {
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setDither(true);
         mPaint.setColor(Color.BLACK);
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeJoin(Paint.Join.ROUND);
+        mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setStrokeWidth(2);
+
 
         mRectF = new RectF();
         mRect = new Rect();
+        mInnerRectF =new RectF();
 
         mPointerX = 200;
         mPointerY = 100;
-        mPointerSize = 100;
+        mPointerSize = 10;
+
+        mIncrement = 4.0f;
+
 
     }
 }
