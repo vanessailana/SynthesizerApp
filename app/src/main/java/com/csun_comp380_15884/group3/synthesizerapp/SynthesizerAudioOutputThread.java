@@ -43,7 +43,7 @@ public class SynthesizerAudioOutputThread extends Thread
         // set process priority
         setPriority(Thread.MAX_PRIORITY);
         // set the buffer size
-        int buffsize = AudioTrack.getMinBufferSize(synthesizerModel.getSampleRate(),AudioFormat.CHANNEL_OUT_STEREO,AudioFormat.ENCODING_PCM_16BIT)/8;
+        int buffsize = AudioTrack.getMinBufferSize(synthesizerModel.getSampleRate(),AudioFormat.CHANNEL_OUT_STEREO,AudioFormat.ENCODING_PCM_16BIT);
 
         // create an audiotrack object
 

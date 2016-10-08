@@ -54,6 +54,8 @@ public class EnvelopeGraph extends View {
     private float mTotalTime;
     private float mXa, mYa, mSa, mXd, mSd, mYs, mXr, mSr;
 
+    private float mScale;
+
     private float mValueAtTouchA;
 
 
