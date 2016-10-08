@@ -115,7 +115,7 @@ public class EnvelopeGraph extends View {
         mInnerRectF.set(mRectF);
 
 
-        mSa = 1.f;
+        mSa = 10.f;
         mSd = 1.f;
         mSr = 1.0f;
 
@@ -126,7 +126,7 @@ public class EnvelopeGraph extends View {
 
         if(points == null)
         {
-            points = new float[(int)mRectF.width()*4];
+            points = new float[(int)mRectF.width()*8];
         }
 
         float Y1 = 0.0f;
@@ -136,6 +136,14 @@ public class EnvelopeGraph extends View {
             Y1 = (float) Math.pow(i / mXa, mSa) * mYa;
             Y2 = (float) Math.pow((i + mIncrement) / mXa, mSa) * mYa;
 
+            if(Y1 >= mYa)
+            {
+                Y1 = mYa;
+            }
+            if(Y2 >= mYa)
+            {
+                Y2 = mYa;
+            }
             points[counter] = i;
             points[counter+1] = Y1;
             points[counter+2] = i+mIncrement;
@@ -157,16 +165,35 @@ public class EnvelopeGraph extends View {
             {
                 Y1 = mYa + (float)Math.pow(i/mXd,mSd)*(mYs-mYa);
                 Y2 = mYa + (float)Math.pow((i+mIncrement)/mXd,mSd)*(mYs-mYa);
+                if(Y1 >= mYs)
+                {
+                    Y1 = mYs;
+                }
+                if(Y2 >= mYs)
+                {
+                    Y2 = mYs;
+                }
             }
             else if(mYs < mYa)
             {
                 Y1 = mYa - (float)Math.pow(i/mXd,mSd)*(mYa-mYs);
                 Y2 = mYa - (float)Math.pow((i+mIncrement)/mXd,mSd)*(mYa-mYs);
+
+                if(Y1 <= mYs)
+                {
+                    Y1 = mYs;
+                }
+                if(Y2 <= mYs)
+                {
+                    Y2 = mYs;
+                }
             }
             else{
                 Y1 = mYs;
                 Y2 = mYs;
             }
+
+
 
 
             //canvas.drawLine(i+mXa,Y1,i+mXa+mIncrement,Y2,mPaint);
@@ -184,9 +211,18 @@ public class EnvelopeGraph extends View {
         for(float i = 0; i < mXr ; i += mIncrement)
         {
 
-            Y1 = mYs - (float)Math.pow(i/mXd,mSd)*mYs;
-            Y2 = mYs - (float)Math.pow((i+mIncrement)/mXd,mSd)*mYs;
+            Y1 = mYs - (float)Math.pow(i/mXr,mSd)*mYs;
+            Y2 = mYs - (float)Math.pow((i+mIncrement)/mXr,mSd)*mYs;
 
+
+            if(Y1 <= 0.0f)
+            {
+                Y1 = 0.0f;
+            }
+            if(Y2 <= 0.0f)
+            {
+                Y2 = 0.0f;
+            }
             //canvas.drawLine(i+mXa+mXd,Y1,i+mXa+mXd+mIncrement,Y2,mPaint);
             points[counter] = i+mXa+mXd;
             points[counter+1] = Y1;
@@ -196,9 +232,9 @@ public class EnvelopeGraph extends View {
 
         }
 
-        canvas.drawCircle(mXa+mXd+mXr,1.0f,mPointerSize,mPaint);
+        canvas.drawCircle(mXa+mXd+mXr,0,mPointerSize,mPaint);
 
-        canvas.drawLines(points,0,(int)mRectF.width()*4,mPaint);
+        canvas.drawLines(points,0,counter,mPaint);
 
 
 
@@ -210,18 +246,18 @@ public class EnvelopeGraph extends View {
         int action = event.getAction();
         float valueX = 0.0f;
         float valueY = 0.0f;
-        float epsilon = 10.0f;
+        float epsilon = mPointerSize*3;
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
                 // Just record the current finger position.
                 mXAtTouch = event.getX();
                 mYAtTouch = event.getY();
 
-                if((valueX = Math.abs(mXAtTouch-mXa)) < epsilon)
+                if((valueX = Math.abs(mXAtTouch-mXa)) < epsilon && (valueY = Math.abs(mYAtTouch-(mRectF.height()-mYa)))<epsilon)
                 {
                     aXYSelected = true;
                 }
-                else if((valueX = Math.abs(mXAtTouch-mXa-mXd)) < epsilon)
+                else if((valueX = Math.abs(mXAtTouch-mXa-mXd)) < epsilon && (valueY = Math.abs(mYAtTouch-(mRectF.height()-mYs)))<epsilon)
                 {
                     dXYSelected = true;
                 }
@@ -236,36 +272,61 @@ public class EnvelopeGraph extends View {
 
             case MotionEvent.ACTION_MOVE: {
 
-
+                epsilon/=2;
                 if(aXYSelected)
                 {
                     mXa = event.getX();
                     mYa = mRectF.height() - event.getY();
-                    if(mXa < 1.0f)
+                    if(mXa <= mIncrement)
                     {
-                        mXa = 1.0f;
+                        mXa = mIncrement;
                     }
-                    else if(mXa > mRectF.width())
+                    else if(mXa > mRectF.width()-mXd-mXr-mPointerSize)
                     {
-                        mXa =mRectF.width()-1;
+                        mXa = mRectF.width()-mXd-mXr-mPointerSize;
                     }
                     if(mYa > mRectF.height())
                     {
-                        mYa = mRectF.height() - 1;
+                        mYa = mRectF.height();
                     }
-                    else if (mYa < 1.0f)
+                    else if (mYa <= 0)
                     {
-                        mYa = 1.0f;
+                        mYa = 0;
                     }
                 }
                 else if(dXYSelected)
                 {
                     mXd = event.getX();
                     mYs = mRectF.height() - event.getY();
+
+                    if(mXd <= mIncrement)
+                    {
+                        mXd = mIncrement;
+                    }
+                    else if(mXd > mRectF.width()-mXa-mXr-mPointerSize)
+                    {
+                        mXd =mRectF.width()-mXa-mXr-mPointerSize;
+                    }
+                    if(mYs > mRectF.height())
+                    {
+                        mYs = mRectF.height();
+                    }
+                    else if (mYs <= 0)
+                    {
+                        mYs = 0;
+                    }
                 }
                 else if(rXSelected)
                 {
                     mXr = event.getX();
+                    if(mXr <= mIncrement)
+                    {
+                        mXr = mIncrement;
+                    }
+                    else if(mXr > mRectF.width()-mXa-mXd-mPointerSize)
+                    {
+                        mXr = mRectF.width()-mXa-mXd-mPointerSize;
+                    }
                 }
 
                 /*

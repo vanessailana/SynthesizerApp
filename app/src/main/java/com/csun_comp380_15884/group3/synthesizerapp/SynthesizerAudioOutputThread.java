@@ -53,6 +53,8 @@ public class SynthesizerAudioOutputThread extends Thread
                 AudioFormat.ENCODING_PCM_16BIT, buffsize,
                 AudioTrack.MODE_STREAM);
 
+        buffsize/=8;
+
         //Interleaved audio buffer mixes outL and outR buffers
         short outputs [] = new short[buffsize];
 

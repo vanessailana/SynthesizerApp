@@ -8,367 +8,429 @@
 
     >
 
-    <LinearLayout android:orientation="horizontal"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
+        android:layout_height="40dp"
         android:weightSum="1">
 
-        <SeekBar
+        <Button
+            android:text="R"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/master" />
+            android:id="@+id/record"
+            style="@style/Widget.AppCompat.Button.Colored"
+            />
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-
-        </LinearLayout>
-
-
-        <GridLayout
+        <Button
+            android:text="S"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/grid_layout">
+            android:id="@+id/stop"
+            style="@style/Widget.AppCompat.Button.Colored" />
 
+        <Spinner
+            android:layout_height="match_parent"
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_weight="1.00" />
+
+        <Button
+            android:text="P"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/save_preset"
+            style="@style/Widget.AppCompat.Button.Colored" />
+
+        <Button
+            android:text="V"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/change_view"
+            style="@style/Widget.AppCompat.Button.Colored" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:weightSum="1">
+
+            <SeekBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/master" />
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_row="0"
-                android:layout_column="2">
+                android:layout_height="wrap_content" >
 
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="@string/_0"
-                    android:id="@+id/textView5"
-                    android:textAlignment="center"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="@string/_1"
-                    android:id="@+id/textView6"
-                    android:textAlignment="center"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="@string/_2"
-                    android:id="@+id/textView7"
-                    android:textAlignment="center"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="@string/_3"
-                    android:id="@+id/textView8"
-                    android:textAlignment="center"
-                    android:textSize="24sp" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_row="1"
-                android:layout_column="1">
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
 
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="0"
-                    android:id="@+id/textView"
-                    android:textAlignment="center"
-                    android:textSize="24sp" />
 
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="1"
-                    android:id="@+id/textView2"
-                    android:textAlignment="center"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="2"
-                    android:id="@+id/textView3"
-                    android:textAlignment="center"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="3"
-                    android:id="@+id/textView4"
-                    android:textAlignment="center"
-                    android:textSize="24sp" />
             </LinearLayout>
+
 
             <GridLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/gridLayout"
-                android:rowCount="4"
-                android:columnCount="4"
-                android:layout_row="1"
-                android:layout_column="2">
+                android:id="@+id/grid_layout">
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:id="@+id/mod_0_0"
                     android:layout_row="0"
-                    android:layout_column="0" />
+                    android:layout_column="2">
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/mod_1_0"
-                    android:layout_row="0"
-                    android:layout_column="1" />
+                    <TextView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="@string/_0"
+                        android:id="@+id/textView5"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/mod_2_0"
-                    android:layout_row="0"
-                    android:layout_column="2" />
+                    <TextView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="@string/_1"
+                        android:id="@+id/textView6"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/mod_3_0"
-                    android:layout_row="0"
-                    android:layout_column="3" />
+                    <TextView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="@string/_2"
+                        android:id="@+id/textView7"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                    <TextView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="@string/_3"
+                        android:id="@+id/textView8"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/mod_0_1"
+                    android:layout_height="wrap_content"
                     android:layout_row="1"
-                    android:layout_column="0" />
+                    android:layout_column="1">
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/mod_1_1"
+                    <TextView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="0"
+                        android:id="@+id/textView"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="1"
+                        android:id="@+id/textView2"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="2"
+                        android:id="@+id/textView3"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="3"
+                        android:id="@+id/textView4"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
+                </LinearLayout>
+
+                <GridLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/gridLayout"
+                    android:rowCount="4"
+                    android:columnCount="4"
                     android:layout_row="1"
-                    android:layout_column="1" />
+                    android:layout_column="2">
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/mod_2_1"
-                    android:layout_row="1"
-                    android:layout_column="2" />
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_0_0"
+                        android:layout_row="0"
+                        android:layout_column="0" />
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/mod_3_1"
-                    android:layout_row="1"
-                    android:layout_column="3" />
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_1_0"
+                        android:layout_row="0"
+                        android:layout_column="1" />
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_2_0"
+                        android:layout_row="0"
+                        android:layout_column="2" />
+
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_3_0"
+                        android:layout_row="0"
+                        android:layout_column="3" />
+
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_0_1"
+                        android:layout_row="1"
+                        android:layout_column="0" />
+
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_1_1"
+                        android:layout_row="1"
+                        android:layout_column="1" />
+
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_2_1"
+                        android:layout_row="1"
+                        android:layout_column="2" />
+
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_3_1"
+                        android:layout_row="1"
+                        android:layout_column="3" />
+
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_0_2"
+                        android:layout_row="2"
+                        android:layout_column="0" />
+
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_1_2"
+                        android:layout_row="2"
+                        android:layout_column="1" />
+
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_2_2"
+                        android:layout_row="2"
+                        android:layout_column="2" />
+
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_3_2"
+                        android:layout_row="2"
+                        android:layout_column="3" />
+
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_0_3"
+                        android:layout_row="3"
+                        android:layout_column="0" />
+
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_1_3"
+                        android:layout_row="3"
+                        android:layout_column="1" />
+
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_2_3"
+                        android:layout_row="3"
+                        android:layout_column="2" />
+
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/mod_3_3"
+                        android:layout_row="3"
+                        android:layout_column="3" />
+
+                </GridLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="120dp"
                     android:layout_height="30dp"
-                    android:id="@+id/mod_0_2"
                     android:layout_row="2"
-                    android:layout_column="0" />
+                    android:layout_column="2">
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/mod_1_2"
-                    android:layout_row="2"
-                    android:layout_column="1" />
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/mod_2_2"
-                    android:layout_row="2"
-                    android:layout_column="2" />
+                </LinearLayout>
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="120dp"
                     android:layout_height="30dp"
-                    android:id="@+id/mod_3_2"
-                    android:layout_row="2"
-                    android:layout_column="3" />
-
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/mod_0_3"
                     android:layout_row="3"
-                    android:layout_column="0" />
+                    android:layout_column="2">
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/mod_1_3"
-                    android:layout_row="3"
-                    android:layout_column="1" />
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/out_0" />
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/out_1" />
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/mod_2_3"
-                    android:layout_row="3"
-                    android:layout_column="2" />
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/out_2" />
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/mod_3_3"
-                    android:layout_row="3"
-                    android:layout_column="3" />
+                    <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/out_3" />
+
+                </LinearLayout>
+
 
             </GridLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="120dp"
-                android:layout_height="30dp"
-                android:layout_row="2"
-                android:layout_column="2">
-
-
-            </LinearLayout>
+                android:orientation="vertical"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"></LinearLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="120dp"
-                android:layout_height="30dp"
-                android:layout_row="3"
-                android:layout_column="2">
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:orientation="vertical"
+                >
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/out_0" />
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/out_1" />
+                <com.csun_comp380_15884.group3.synthesizerapp.envelopeGraph.EnvelopeGraph
+                    android:layout_height="107dp"
+                    android:layout_width="291dp"
+                    android:id="@+id/eg"
+                     />
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/out_2" />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="50dp"></LinearLayout>
 
-                <com.csun_comp380_15884.group3.synthesizerapp.knob.KnobView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/out_3" />
+                <LinearLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal">
 
-            </LinearLayout>
+                    <Button
+                        android:text="Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/button5"
+                        android:layout_weight="1" />
 
+                    <Button
+                        android:text="Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/button4"
+                        android:layout_weight="1" />
 
-        </GridLayout>
+                    <Button
+                        android:text="Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/button3"
+                        android:layout_weight="1" />
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"></LinearLayout>
+                    <Button
+                        android:text="Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/button2"
+                        android:layout_weight="1" />
 
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:orientation="vertical"
-            >
+                    <Button
+                        android:text="Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/button"
+                        android:layout_weight="1" />
+                </LinearLayout>
 
-            <com.csun_comp380_15884.group3.synthesizerapp.envelopeGraph.EnvelopeGraph
-                android:layout_height="107dp"
-                android:layout_width="291dp"
-                android:id="@+id/eg"
-                 />
-
-            <LinearLayout
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:orientation="horizontal">
-
-                <Button
-                    android:text="Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/button5"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:text="Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/button4"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:text="Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/button3"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:text="Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/button2"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:text="Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/button"
-                    android:layout_weight="1" />
             </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <com.csun_comp380_15884.group3.synthesizerapp.keyboard.ScrollStripView
-        android:id="@+id/ssv"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/scrollstripheight"/>
+            <com.csun_comp380_15884.group3.synthesizerapp.keyboard.ScrollStripView
+                android:id="@+id/ssv"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.25" />
 
-    <com.csun_comp380_15884.group3.synthesizerapp.keyboard.KeyboardView
-        android:id="@+id/kv"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        app:octaves="2"
-        app:first_octave="4"/>
+            <com.csun_comp380_15884.group3.synthesizerapp.keyboard.KeyboardView
+                android:id="@+id/kv"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:octaves="2"
+                app:first_octave="4"/>
+        </LinearLayout>
+    </FrameLayout>
 
 </LinearLayout>
